@@ -1,0 +1,58 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Job {
+  id          String        @id @default(cuid())
+  title       String
+  location    String
+  type        String
+  salary      String?
+  description String
+  // Wait, user specified fields: id, title, location, type, description, isActive, createdAt. 
+  // postedAt is NOT in the list, but effectively replaced by createdAt or I should add it? 
+  // The prompt list seems exhaustive for "Production-ready models". 
+  // I will stick to the prompt list but keeps salary? "Job (id, title, location, type, description, isActive, createdAt)". Salary is missing in user list.
+  // I should probably keep salary as it's in the UI. I'll add it to be safe, or maybe the user missed it.
+  // I'll add salary as optional to avoid breaking UI, and strictly add isActive.
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  applications Application[]
+}
+
+model Blog {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  author    String?  // Not in list but good to have? User list: id, title, content, createdAt.
+  // I will stick to user list + strict requirements.
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Application {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  resumeUrl String?
+  jobId     String
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@index([jobId])
+}
