@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/db";
 import { PageHeader } from "@/components/PageHeader";
 import { Section } from "@/components/ui/section";
@@ -66,3 +67,6 @@ export default async function JobDetailsPage({ params }: { params: { id: string 
         </div>
     );
 }
+// git add .
+// git commit -m "fix build: force dynamic jobs page"
+// git push
